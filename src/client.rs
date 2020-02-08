@@ -39,7 +39,7 @@ impl Client {
         })
     }
 
-    pub(crate) fn get_json_endpoint(&self, endpoint: &str) -> Result<serde_json::Value> {
+    pub fn get_json_endpoint(&self, endpoint: &str) -> Result<serde_json::Value> {
         #[cfg(not(test))]
         let url = "https://e621.net";
 
