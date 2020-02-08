@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn get_json_endpoint_http_error() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let _m = mock("GET", "/post/show.json?id=8595")
             .with_status(500)
@@ -106,7 +106,7 @@ mod tests {
 
     #[test]
     fn get_json_endpoint_success() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let _m = mock("GET", "/post/show.json?id=8595")
             .with_body(r#"{"dummy":"json"}"#)
@@ -124,7 +124,7 @@ mod tests {
 
     #[test]
     fn create_header_map_works() {
-        assert!(create_header_map(b"rs621/unit_test").is_ok());
+        assert!(create_header_map(b"xe621/unit_test").is_ok());
     }
 
     #[test]

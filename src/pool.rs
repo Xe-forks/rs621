@@ -1,6 +1,6 @@
 use super::{
     client::Client,
-    error::{Error, Result as Rs621Result},
+    error::{Error, Result as Xe621Result},
     post::Post,
     utils::{get_json_api_time, get_json_value_as},
 };
@@ -17,7 +17,7 @@ pub struct PoolIter<'a> {
     query: Option<String>,
 
     page: u64,
-    chunk: Vec<Rs621Result<PoolListEntry>>,
+    chunk: Vec<Xe621Result<PoolListEntry>>,
     ended: bool,
 }
 
@@ -35,9 +35,9 @@ impl PoolIter<'_> {
 }
 
 impl Iterator for PoolIter<'_> {
-    type Item = Rs621Result<PoolListEntry>;
+    type Item = Xe621Result<PoolListEntry>;
 
-    fn next(&mut self) -> Option<Rs621Result<PoolListEntry>> {
+    fn next(&mut self) -> Option<Xe621Result<PoolListEntry>> {
         // check if we need to load a new chunk of results
         if self.chunk.is_empty() {
             // get the JSON
@@ -97,8 +97,8 @@ impl Iterator for PoolIter<'_> {
 /// `From<(PoolListEntry, &Client)>`:
 ///
 /// ```no_run
-/// # use rs621::client::Client;
-/// # use rs621::pool::{Pool, PoolListEntry};
+/// # use xe621::client::Client;
+/// # use xe621::pool::{Pool, PoolListEntry};
 /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// use std::convert::TryFrom;
 ///
@@ -139,7 +139,7 @@ pub struct PoolListEntry {
 impl TryFrom<&JsonValue> for PoolListEntry {
     type Error = super::error::Error;
 
-    fn try_from(v: &JsonValue) -> Rs621Result<Self> {
+    fn try_from(v: &JsonValue) -> Xe621Result<Self> {
         Ok(PoolListEntry {
             raw: v.to_string(),
 
@@ -183,7 +183,7 @@ pub struct Pool {
 impl TryFrom<&JsonValue> for Pool {
     type Error = super::error::Error;
 
-    fn try_from(v: &JsonValue) -> Rs621Result<Self> {
+    fn try_from(v: &JsonValue) -> Xe621Result<Self> {
         Ok(Pool {
             raw: v.to_string(),
 
@@ -200,7 +200,7 @@ impl TryFrom<&JsonValue> for Pool {
                 .unwrap()
                 .iter()
                 .map(Post::try_from)
-                .collect::<Rs621Result<Vec<Post>>>()?,
+                .collect::<Xe621Result<Vec<Post>>>()?,
         })
     }
 }
@@ -215,7 +215,7 @@ impl TryFrom<(PoolListEntry, &Client)> for Pool {
     /// [`Client::get_pool`]: ../client/struct.Client.html#method.get_pool
     /// [`Pool`]: struct.Pool.html
     /// [`PoolListEntry`]: struct.PoolListEntry.html
-    fn try_from((r, c): (PoolListEntry, &Client)) -> Rs621Result<Pool> {
+    fn try_from((r, c): (PoolListEntry, &Client)) -> Xe621Result<Pool> {
         c.get_pool(r.id)
     }
 }
@@ -224,9 +224,9 @@ impl Client {
     /// Returns the pool with the given ID.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # use rs621::pool::Pool;
-    /// # fn main() -> rs621::error::Result<()> {
+    /// # use xe621::client::Client;
+    /// # use xe621::pool::Pool;
+    /// # fn main() -> xe621::error::Result<()> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     /// let pool = client.get_pool(18274)?;
     ///
@@ -236,7 +236,7 @@ impl Client {
     ///
     /// _Note: This function performs a request; it will be subject to a short sleep time to ensure
     /// that the API rate limit isn't exceeded._
-    pub fn get_pool(&self, id: u64) -> Rs621Result<Pool> {
+    pub fn get_pool(&self, id: u64) -> Xe621Result<Pool> {
         let body = self.get_json_endpoint(&format!("/pool/show.json?id={}", id))?;
 
         Pool::try_from(&body)
@@ -245,8 +245,8 @@ impl Client {
     /// Returns an iterator over all the pools on the website.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # use rs621::pool::Pool;
+    /// # use xe621::client::Client;
+    /// # use xe621::pool::Pool;
     /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     ///
@@ -271,8 +271,8 @@ impl Client {
     /// Search all the pools in the website and returns an iterator over the results.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # use rs621::pool::Pool;
+    /// # use xe621::client::Client;
+    /// # use xe621::pool::Pool;
     /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     ///
@@ -337,7 +337,7 @@ mod tests {
 
     #[test]
     fn get_pool() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let _m = mock("GET", "/pool/show.json?id=18274")
             .with_body(include_str!("mocked/pool_18274.json"))
@@ -349,7 +349,7 @@ mod tests {
 
     #[test]
     fn pool_list() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let _m = [
             mock("GET", "/pool/index.json?page=1")
@@ -372,7 +372,7 @@ mod tests {
 
     #[test]
     fn pool_search() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let _m = [
             mock("GET", "/pool/index.json?page=1&query=foo")

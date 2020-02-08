@@ -1,6 +1,6 @@
 use super::{
     client::Client,
-    error::Result as Rs621Result,
+    error::Result as Xe621Result,
     utils::{get_json_api_time, get_json_value_as},
 };
 use chrono::{offset::Utc, DateTime, TimeZone};
@@ -35,7 +35,7 @@ pub struct PostIter<'a> {
 
     last_id: Option<u64>,
     page: u64,
-    chunk: Vec<Rs621Result<Post>>,
+    chunk: Vec<Xe621Result<Post>>,
     ended: bool,
 }
 
@@ -55,9 +55,9 @@ impl<'a> PostIter<'a> {
 }
 
 impl<'a> Iterator for PostIter<'a> {
-    type Item = Rs621Result<Post>;
+    type Item = Xe621Result<Post>;
 
-    fn next(&mut self) -> Option<Rs621Result<Post>> {
+    fn next(&mut self) -> Option<Xe621Result<Post>> {
         // check if we need to load a new chunk of results
         if self.chunk.is_empty() {
             // get the JSON
@@ -410,7 +410,7 @@ impl Default for Post {
 impl TryFrom<&JsonValue> for Post {
     type Error = super::error::Error;
 
-    fn try_from(v: &JsonValue) -> Rs621Result<Self> {
+    fn try_from(v: &JsonValue) -> Xe621Result<Self> {
         Ok(Post {
             raw: v.to_string(),
 
@@ -489,8 +489,8 @@ impl Client {
     /// Returns the post with the given ID.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # fn main() -> rs621::error::Result<()> {
+    /// # use xe621::client::Client;
+    /// # fn main() -> xe621::error::Result<()> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     /// let post = client.get_post(8595)?;
     ///
@@ -500,7 +500,7 @@ impl Client {
     ///
     /// _Note: This function performs a request; it will be subject to a short sleep time to ensure
     /// that the API rate limit isn't exceeded._
-    pub fn get_post(&self, id: u64) -> Rs621Result<Post> {
+    pub fn get_post(&self, id: u64) -> Xe621Result<Post> {
         let body = self.get_json_endpoint(&format!("/post/show.json?id={}", id))?;
 
         Post::try_from(&body)
@@ -509,8 +509,8 @@ impl Client {
     /// Returns an iterator over all the posts on the website.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # fn main() -> Result<(), rs621::error::Error> {
+    /// # use xe621::client::Client;
+    /// # fn main() -> Result<(), xe621::error::Error> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     ///
     /// for post in client
@@ -531,9 +531,9 @@ impl Client {
     /// Returns an iterator over all the posts matching the given tags.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # use rs621::post::PostRating;
-    /// # fn main() -> Result<(), rs621::error::Error> {
+    /// # use xe621::client::Client;
+    /// # use xe621::post::PostRating;
+    /// # fn main() -> Result<(), xe621::error::Error> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     ///
     /// for post in client
@@ -554,8 +554,8 @@ impl Client {
     /// Returns an iterator over all the posts with an ID smaller than `before_id`.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # fn main() -> Result<(), rs621::error::Error> {
+    /// # use xe621::client::Client;
+    /// # fn main() -> Result<(), xe621::error::Error> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     ///
     /// for post in client
@@ -577,9 +577,9 @@ impl Client {
     /// `before_id`.
     ///
     /// ```no_run
-    /// # use rs621::client::Client;
-    /// # use rs621::post::PostRating;
-    /// # fn main() -> Result<(), rs621::error::Error> {
+    /// # use xe621::client::Client;
+    /// # use xe621::post::PostRating;
+    /// # fn main() -> Result<(), xe621::error::Error> {
     /// let client = Client::new("MyProject/1.0 (by username on e621)")?;
     ///
     /// for post in client
@@ -611,7 +611,7 @@ mod tests {
 
     #[test]
     fn search_ordered() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         const REQ_TAGS: &str = "fluffy%20rating%3As%20order%3Ascore";
 
@@ -647,7 +647,7 @@ mod tests {
 
     #[test]
     fn search_above_limit_ordered() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         const REQ_TAGS: &str = "fluffy%20rating%3As%20order%3Ascore";
         const PAGES: [&str; 2] = [
@@ -701,7 +701,7 @@ mod tests {
 
     #[test]
     fn search_before_id() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let response = include_str!("mocked/320_before-1869409_fluffy_rating-s.json");
         let response_json = serde_json::from_str::<JsonValue>(response).unwrap();
@@ -734,7 +734,7 @@ mod tests {
 
     #[test]
     fn search_above_limit() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let response = include_str!("mocked/400_fluffy_rating-s.json");
         let response_json = serde_json::from_str::<JsonValue>(response).unwrap();
@@ -779,7 +779,7 @@ mod tests {
 
     #[test]
     fn list_above_limit() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let response = include_str!("mocked/400_fluffy_rating-s.json");
         let response_json = serde_json::from_str::<JsonValue>(response).unwrap();
@@ -815,7 +815,7 @@ mod tests {
 
     #[test]
     fn search_no_result() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let response = "[]";
         let expected = Vec::new();
@@ -841,7 +841,7 @@ mod tests {
 
     #[test]
     fn search_simple() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let response = include_str!("mocked/320_fluffy_rating-s.json");
         let response_json = serde_json::from_str::<JsonValue>(response).unwrap();
@@ -874,7 +874,7 @@ mod tests {
 
     #[test]
     fn list_simple() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let response = include_str!("mocked/320_fluffy_rating-s.json");
         let response_json = serde_json::from_str::<JsonValue>(response).unwrap();
@@ -898,7 +898,7 @@ mod tests {
 
     #[test]
     fn get_post_by_id() {
-        let client = Client::new(b"rs621/unit_test").unwrap();
+        let client = Client::new(b"xe621/unit_test").unwrap();
 
         let response = include_str!("mocked/id_8595.json");
         let response_json = serde_json::from_str::<JsonValue>(response).unwrap();

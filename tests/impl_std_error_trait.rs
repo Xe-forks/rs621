@@ -1,4 +1,4 @@
-use rs621::client::Client;
+use xe621::client::Client;
 
 #[test]
 fn impl_std_error_trait() -> Result<(), Box<dyn std::error::Error>> {

@@ -2,12 +2,12 @@ use reqwest::header::InvalidHeaderValue;
 
 use custom_error::custom_error;
 
-/// Result type for `rs621`, using [`rs621::error::Error`].
+/// Result type for `xe621`, using [`xe621::error::Error`].
 ///
-/// [`rs621::error::Error`]: enum.Error.html
+/// [`xe621::error::Error`]: enum.Error.html
 pub type Result<T> = ::std::result::Result<T, Error>;
 
-custom_error! { #[doc = "Enum for `rs621` errors."] #[derive(PartialEq)] pub Error
+custom_error! { #[doc = "Enum for `xe621` errors."] #[derive(PartialEq)] pub Error
     #[doc = "The given value for the some option is above the maximum value allowed in its"]
     #[doc = "context. E.g.: `order:score limit:350` is an invalid request because the maximum"]
     #[doc = "limit for ordered queries is 320."]

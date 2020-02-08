@@ -1,6 +1,6 @@
-use rs621::client::Client;
+use xe621::client::Client;
 
-fn main() -> rs621::error::Result<()> {
+fn main() -> xe621::error::Result<()> {
     let client = Client::new("MyProject/1.0 (by username on e621)")?;
 
     println!("Top ten safe fluffy posts!");
