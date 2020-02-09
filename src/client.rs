@@ -24,7 +24,7 @@ fn create_header_map<T: AsRef<[u8]>>(user_agent: T) -> Result<HeaderMap> {
 /// Client struct.
 #[derive(Debug)]
 pub struct Client {
-    pub(crate) client: reqwest::Client,
+    pub(crate) client: reqwest::blocking::Client,
     headers: HeaderMap,
 }
 
@@ -34,7 +34,7 @@ impl Client {
     /// the name of your project.
     pub fn new(user_agent: impl AsRef<[u8]>) -> Result<Self> {
         Ok(Client {
-            client: reqwest::Client::new(),
+            client: reqwest::blocking::Client::new(),
             headers: create_header_map(user_agent)?,
         })
     }
@@ -55,7 +55,7 @@ impl Client {
             .headers(self.headers.clone())
             .send()
         {
-            Ok(mut res) => {
+            Ok(res) => {
                 if res.status().is_success() {
                     match res.json() {
                         Ok(v) => Ok(v),

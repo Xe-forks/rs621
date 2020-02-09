@@ -1,6 +1,6 @@
 [package]
 name = "xe621"
-version = "0.6.2"
+version = "0.6.3"
 authors = ["nasso <nassomails@gmail.com>", "Xe <me@christine.website>"]
 edition = "2018"
 description = "Rust crate for the E621 API (a large online archive of furry art)."
@@ -17,7 +17,7 @@ custom_error = "1"
 urlencoding = "1"
 chrono = "0"
 serde_json = "1"
-reqwest = "0.9"
+reqwest = { version = "0.10", features = ["blocking", "json", "rustls-tls"] }
 
 [dev-dependencies]
 mockito = "0"
